@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Turn a public GitHub profile into an original fantasy trading card." />
+    <title>GitMagic — GitHub profiles as fantasy cards</title>
+    <link rel="stylesheet" href="src/styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="hero">
+        <a class="brand" href="/" aria-label="GitMagic home"><span class="brand-gem">✦</span> GitMagic</a>
+        <p class="eyebrow">PUBLIC GITHUB SIGNALS · LEGENDARY CARDS</p>
+        <h1>Summon your developer <em>legend.</em></h1>
+        <p class="lede">GitMagic turns public GitHub activity into an original fantasy trading card: colors from your stack, power from community impact, and abilities from your craft.</p>
+        <form id="search-form" class="search" novalidate>
+          <label class="sr-only" for="username">GitHub username</label>
+          <span class="at">@</span><input id="username" name="username" placeholder="GitHub username" autocomplete="off" required />
+          <button type="submit">Forge card <span aria-hidden="true">→</span></button>
+        </form>
+        <p id="status" class="status" aria-live="polite">Try <button class="text-button" data-example="torvalds" type="button">torvalds</button>, <button class="text-button" data-example="octocat" type="button">octocat</button>, or your own public profile.</p>
+      </header>
+
+      <section class="forge" aria-label="Generated GitMagic card">
+        <div id="card" class="card card--demo" data-rarity="rare">
+          <div class="card-frame">
+            <div class="card-topline"><span id="card-name">The Unfetched Mage</span><span id="mana-cost" class="mana-cost">{2}{U}</span></div>
+            <div class="art-panel"><img id="avatar" alt="GitHub avatar preview" src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" /><div class="art-halo"></div><span class="art-caption">A profile waits beyond the aether.</span></div>
+            <div id="type-line" class="type-line">Legendary Creature — Developer Wizard <span>✦</span></div>
+            <div class="text-box">
+              <p id="oracle-text" class="oracle">Enter a GitHub username to reveal its public contribution magic.</p>
+              <p id="abilities" class="abilities">Commit Ritual — At the beginning of your upkeep, scry 1.</p>
+              <p id="flavor-text" class="flavor">“Every great branch begins with a single commit.”</p>
+            </div>
+            <div class="card-footer"><span id="set-code">GIT · 001</span><span id="rarity">RARE</span><strong id="pt">2 / 3</strong></div>
+          </div>
+        </div>
+
+        <aside class="codex">
+          <p class="eyebrow">DEVELOPER CODEX</p>
+          <h2 id="codex-name">Your origin story, rendered.</h2>
+          <div id="color-identity" class="identity"><span class="color-dot color-U">U</span><span>Color identity awaits</span></div>
+          <dl class="stats-grid">
+            <div><dt>Stars</dt><dd id="stat-stars">—</dd></div>
+            <div><dt>Followers</dt><dd id="stat-followers">—</dd></div>
+            <div><dt>Repositories</dt><dd id="stat-repos">—</dd></div>
+            <div><dt>Forks</dt><dd id="stat-forks">—</dd></div>
+          </dl>
+          <div class="actions"><button id="download" type="button" disabled>Download card</button><button id="copy-link" type="button" disabled>Copy profile link</button></div>
+          <p class="fine-print">Built from public GitHub API data. GitMagic is an unofficial, original fantasy-card experience and is not affiliated with GitHub or Wizards of the Coast.</p>
+        </aside>
+      </section>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js" defer></script>
+    <script type="module" src="src/app.js"></script>
+  </body>
+</html>
