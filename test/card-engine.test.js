@@ -1,47 +1,37 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildCard, classifyColorIdentity, formatAbility } from '../src/card-engine.js';
+import { buildCard } from '../src/card-engine.js';
 
 const profile = {
   login: 'arcane-dev',
   name: 'Arcane Developer',
-  bio: 'Making worlds',
+  bio: 'Making reusable Unity game systems and experimental tools.',
   avatar_url: 'https://example.test/avatar.png',
   public_repos: 12,
   followers: 42,
-  following: 8,
   created_at: '2020-01-01T00:00:00Z',
 };
 
 const repos = [
-  { stargazers_count: 120, forks_count: 25, language: 'TypeScript', description: 'Game systems' },
-  { stargazers_count: 10, forks_count: 2, language: 'C#', description: 'Unity spells' },
-  { stargazers_count: 3, forks_count: 1, language: 'TypeScript', description: 'Tools' },
+  { name: 'scene-forge', fork: false, stargazers_count: 120, forks_count: 25, language: 'TypeScript', description: 'Game tools and reusable systems', topics: ['game-development', 'tooling'], created_at: '2020-01-01T00:00:00Z', pushed_at: '2026-07-10T00:00:00Z' },
+  { name: 'unity-spells', fork: false, stargazers_count: 10, forks_count: 2, language: 'C#', description: 'Unity gameplay prototypes', topics: ['unity', 'game-dev'], created_at: '2021-01-01T00:00:00Z', pushed_at: '2026-07-01T00:00:00Z' },
+  { name: 'upstream-tool', fork: true, stargazers_count: 3, forks_count: 1, language: 'TypeScript', description: 'Adapted tool', topics: ['tooling'], created_at: '2023-01-01T00:00:00Z', pushed_at: '2025-01-01T00:00:00Z' },
 ];
 
-test('classifyColorIdentity maps languages to a deterministic MTG color identity', () => {
-  assert.deepEqual(classifyColorIdentity(['TypeScript', 'C#']), ['U', 'R']);
-  assert.deepEqual(classifyColorIdentity(['Python']), ['G']);
-  assert.deepEqual(classifyColorIdentity([]), ['C']);
-});
+test('buildCard derives a readable behavioral identity instead of exposing profile totals as rules text', () => {
+  const card = buildCard(profile, repos, { now: new Date('2026-07-17T00:00:00Z') });
 
-test('formatAbility converts technical GitHub signals into readable card rules', () => {
-  const text = formatAbility({ name: 'Forked Genius', type: 'triggered', value: 25 });
-  assert.match(text, /25/);
-  assert.match(text, /Fork/i);
-});
-
-test('buildCard produces a complete playable legendary developer card from public profile data', () => {
-  const card = buildCard(profile, repos);
-
-  assert.equal(card.name, 'Arcane Developer');
-  assert.equal(card.typeLine, 'Legendary Creature — Developer Wizard');
   assert.deepEqual(card.colors, ['U', 'R']);
-  assert.match(card.manaCost, /^\{\d+\}\{U\}\{R\}/);
-  assert.ok(card.power >= 1 && card.power <= 12);
-  assert.ok(card.toughness >= 1 && card.toughness <= 12);
-  assert.equal(card.abilities.length, 3);
-  assert.match(card.oracleText, /GitHub/i);
-  assert.equal(card.flavorText, 'Making worlds');
-  assert.equal(card.stats.stars, 133);
+  assert.equal(card.typeLine, 'Legendary Creature — Human Artificer');
+  assert.match(card.name, /^Arcane Developer, /);
+  assert.equal(card.mechanics.length, 3);
+  assert.equal(card.mechanics[0].kind, 'keyword');
+  assert.ok(card.mechanics.every((mechanic) => mechanic.text.split(/\s+/).length < 24));
+  assert.doesNotMatch(card.mechanics.map((mechanic) => mechanic.text).join(' '), /12 repositories|133 stars|28 forks/i);
+  assert.ok(['uncommon', 'rare', 'mythic'].includes(card.rarity));
+  assert.ok(card.power >= 2 && card.power <= 6);
+  assert.ok(card.toughness >= 2 && card.toughness <= 7);
+  assert.equal(card.provenance.originalRepos, 2);
+  assert.equal(card.provenance.forkedRepos, 1);
+  assert.deepEqual(card.visualMotifs.domains.slice(0, 2), ['game', 'tooling']);
 });

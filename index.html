@@ -3,52 +3,61 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Turn a public GitHub profile into an original fantasy trading card." />
-    <title>GitMagic — GitHub profiles as fantasy cards</title>
+    <meta name="description" content="Turn a public GitHub profile into a deterministic fantasy character card." />
+    <title>GitMagic — developer legends, forged from code</title>
     <link rel="stylesheet" href="src/styles.css" />
   </head>
   <body>
     <main class="app-shell">
       <header class="hero">
-        <a class="brand" href="/" aria-label="GitMagic home"><span class="brand-gem">✦</span> GitMagic</a>
-        <p class="eyebrow">PUBLIC GITHUB SIGNALS · LEGENDARY CARDS</p>
-        <h1>Summon your developer <em>legend.</em></h1>
-        <p class="lede">GitMagic turns public GitHub activity into an original fantasy trading card: colors from your stack, power from community impact, and abilities from your craft.</p>
+        <a class="brand" href="/GitMagic" aria-label="GitMagic home"><span class="brand-mark" aria-hidden="true">✦</span> GitMagic</a>
+        <p class="eyebrow">DETERMINISTIC CHARACTER FORGE · PUBLIC GITHUB SIGNALS</p>
+        <h1>A developer’s work,<br /><em>made legendary.</em></h1>
+        <p class="lede">GitMagic reads the shape of a public body of work—not a résumé—and translates it into a playable fantasy identity with a provenance card to explain the forge.</p>
         <form id="search-form" class="search" novalidate>
           <label class="sr-only" for="username">GitHub username</label>
-          <span class="at">@</span><input id="username" name="username" placeholder="GitHub username" autocomplete="off" required />
-          <button type="submit">Forge card <span aria-hidden="true">→</span></button>
+          <span class="at" aria-hidden="true">@</span><input id="username" name="username" placeholder="GitHub username" autocomplete="off" required />
+          <button type="submit">Forge legend <span aria-hidden="true">→</span></button>
         </form>
         <p id="status" class="status" aria-live="polite">Try <button class="text-button" data-example="torvalds" type="button">torvalds</button>, <button class="text-button" data-example="octocat" type="button">octocat</button>, or your own public profile.</p>
       </header>
 
       <section class="forge" aria-label="Generated GitMagic card">
-        <div id="card" class="card card--demo" data-rarity="rare">
-          <div class="card-frame">
-            <div class="card-topline"><span id="card-name">The Unfetched Mage</span><span id="mana-cost" class="mana-cost">{2}{U}</span></div>
-            <div class="art-panel"><img id="avatar" alt="GitHub avatar preview" src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" /><div class="art-halo"></div><span class="art-caption">A profile waits beyond the aether.</span></div>
-            <div id="type-line" class="type-line">Legendary Creature — Developer Wizard <span>✦</span></div>
-            <div class="text-box">
-              <p id="oracle-text" class="oracle">Enter a GitHub username to reveal its public contribution magic.</p>
-              <p id="abilities" class="abilities">Commit Ritual — At the beginning of your upkeep, scry 1.</p>
-              <p id="flavor-text" class="flavor">“Every great branch begins with a single commit.”</p>
-            </div>
-            <div class="card-footer"><span id="set-code">GIT · 001</span><span id="rarity">RARE</span><strong id="pt">2 / 3</strong></div>
+        <div id="card" class="card card--demo" data-colors="U" data-domain="tooling">
+          <div class="card-inner">
+            <article class="card-face card-front" aria-label="Playable character card">
+              <header class="card-titlebar"><span id="card-name">The Unfetched Mage</span><span id="mana-cost" class="mana-cost" aria-label="Mana cost"></span></header>
+              <div id="art-scene" class="art-scene" aria-label="Procedural fantasy artwork">
+                <div class="scene-grid"></div><div class="scene-orbit orbit-a"></div><div class="scene-orbit orbit-b"></div><div class="scene-core"></div><div class="scene-spire spire-a"></div><div class="scene-spire spire-b"></div>
+              </div>
+              <div id="type-line" class="type-line">Legendary Creature — Human Artificer <span class="set-symbol" aria-hidden="true">✦</span></div>
+              <div class="rules-box"><div id="mechanics" class="mechanics"><p class="mechanic-keyword">Vigilance</p><p>Whenever you cast your second noncreature spell each turn, investigate.</p><p>Remove three build counters from this creature: Create a Prototype artifact creature token.</p></div><p id="flavor-text" class="flavor">“Every system begins as a spark looking for its circuit.”</p></div>
+              <footer class="card-footer"><span id="collector-number">GMG • 001/250</span><span id="rarity" class="rarity">RARE</span><span id="snapshot" class="snapshot">FORGE 2.0</span><strong id="pt" class="pt">3 / 4</strong></footer>
+            </article>
+
+            <article class="card-face card-back" aria-label="GitHub provenance card">
+              <header class="back-titlebar"><span>Git Provenance</span><span class="set-symbol" aria-hidden="true">✦</span></header>
+              <div class="back-seal"><span id="back-handle">@unfetched</span><span>PUBLIC ACCOUNT ARCHIVE</span></div>
+              <dl class="provenance-grid">
+                <div><dt>Snapshot</dt><dd id="back-snapshot">—</dd></div><div><dt>Original works</dt><dd id="back-original">—</dd></div>
+                <div><dt>Forked works</dt><dd id="back-forked">—</dd></div><div><dt>Active momentum</dt><dd id="back-active">—</dd></div>
+                <div><dt>Account age</dt><dd id="back-age">—</dd></div><div><dt>Long maintenance</dt><dd id="back-longevity">—</dd></div>
+              </dl>
+              <section class="back-section"><h2>Dominant domains</h2><p id="back-domains">—</p></section>
+              <section class="back-section"><h2>Top languages</h2><p id="back-languages">—</p></section>
+              <section class="back-section"><h2>Signature works</h2><p id="back-signatures">—</p></section>
+              <footer class="back-footer"><span id="back-generator">GMG • GENERATOR 2.0</span><a id="profile-url" href="https://github.com" target="_blank" rel="noreferrer">VIEW GITHUB PROFILE ↗</a></footer>
+            </article>
           </div>
         </div>
 
-        <aside class="codex">
-          <p class="eyebrow">DEVELOPER CODEX</p>
-          <h2 id="codex-name">Your origin story, rendered.</h2>
-          <div id="color-identity" class="identity"><span class="color-dot color-U">U</span><span>Color identity awaits</span></div>
-          <dl class="stats-grid">
-            <div><dt>Stars</dt><dd id="stat-stars">—</dd></div>
-            <div><dt>Followers</dt><dd id="stat-followers">—</dd></div>
-            <div><dt>Repositories</dt><dd id="stat-repos">—</dd></div>
-            <div><dt>Forks</dt><dd id="stat-forks">—</dd></div>
-          </dl>
-          <div class="actions"><button id="download" type="button" disabled>Download card</button><button id="copy-link" type="button" disabled>Copy profile link</button></div>
-          <p class="fine-print">Built from public GitHub API data. GitMagic is an unofficial, original fantasy-card experience and is not affiliated with GitHub or Wizards of the Coast.</p>
+        <aside class="forge-notes">
+          <p class="eyebrow">CHARACTER READOUT</p>
+          <h2 id="codex-name">A legend waits in the archive.</h2>
+          <div id="color-identity" class="identity"><span>Color identity awaits</span></div>
+          <div class="identity-copy"><p id="identity-summary">The forge weighs current momentum, long-term stewardship, domains, and the way a developer builds—not popularity alone.</p></div>
+          <div class="actions"><button id="flip-card" type="button" aria-pressed="false">Reveal provenance</button><button id="download" type="button" disabled>Download card</button><button id="copy-link" type="button" disabled>Copy profile link</button></div>
+          <p class="fine-print">Front mechanics are produced from limited, pre-balanced templates. The reverse keeps the public source signals and snapshot that shaped the card.</p>
         </aside>
       </section>
     </main>
