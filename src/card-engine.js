@@ -25,7 +25,7 @@ const ARCHETYPES = {
     mechanics: [
       ['keyword', 'Vigilance'],
       ['triggered', 'Whenever you cast your second noncreature spell each turn, investigate.'],
-      ['payoff', 'Remove three build counters from this creature: Create a Prototype artifact creature token.'],
+      ['payoff', "Whenever you sacrifice an artifact, put a build counter on this creature. Remove three build counters from it: Create a token that's a copy of target nonlegendary artifact you control."],
     ],
     flavor: 'Build it once to understand it. Build it again to make it survive.',
   },
@@ -101,12 +101,13 @@ function rankedDomains(scores) {
 }
 
 function signalColorScores({ domains, languageDiversity, activeRatio, longevityYears, forkRatio }) {
+  const root = (value) => Math.sqrt(Math.max(0, value));
   return {
-    W: domains.documentation * 2 + Math.min(2, forkRatio * 4),
-    U: domains.tooling * 2.5 + domains.ai * 2 + Math.min(3, languageDiversity),
-    B: domains.security * 3 + domains.infrastructure + Math.min(1, forkRatio * 2),
-    R: domains.game * 2 + Math.min(2, activeRatio * 2),
-    G: domains.tooling + Math.min(3, longevityYears / 2) + (activeRatio > 0.45 ? 1 : 0),
+    W: root(domains.documentation) * 3 + Math.min(2, forkRatio * 4),
+    U: root(domains.tooling) * 2.5 + root(domains.ai) * 2 + Math.min(3, languageDiversity),
+    B: root(domains.security) * 3 + root(domains.infrastructure) + Math.min(1, forkRatio * 2),
+    R: root(domains.game) * 4 + Math.min(2, activeRatio * 2),
+    G: root(domains.tooling) * 2 + Math.min(3, longevityYears / 2) + (activeRatio > 0.45 ? 1 : 0),
   };
 }
 
@@ -114,7 +115,7 @@ function colorsFromScores(scores) {
   const ranked = Object.entries(scores).sort((left, right) => right[1] - left[1] || COLOR_ORDER.indexOf(left[0]) - COLOR_ORDER.indexOf(right[0]));
   const strongest = ranked[0]?.[1] || 0;
   if (!strongest) return ['C'];
-  const chosen = ranked.filter(([, score], index) => index === 0 || (index < 3 && score >= strongest * 0.55 && score >= 2)).map(([color]) => color);
+  const chosen = ranked.filter(([, score], index) => index === 0 || (index < 3 && score >= strongest * 0.5 && score >= 3)).map(([color]) => color);
   return COLOR_ORDER.filter((color) => chosen.includes(color));
 }
 
@@ -134,6 +135,7 @@ export function analyzeProfile(profile, repos, { now = new Date() } = {}) {
   const languages = [...new Set(relevant.map((repo) => repo.language).filter(Boolean))];
   const cutoff = new Date(now.valueOf() - 180 * 24 * 60 * 60 * 1000);
   const active = relevant.filter((repo) => date(repo.pushed_at)?.valueOf() >= cutoff.valueOf());
+  const activeRatio = relevant.length ? active.length / relevant.length : 0;
   const accountStart = date(profile.created_at) || now;
   const longestRepo = relevant.reduce((oldest, repo) => {
     const created = date(repo.created_at);
@@ -151,7 +153,8 @@ export function analyzeProfile(profile, repos, { now = new Date() } = {}) {
     accountAgeYears: Math.max(0, (now - accountStart) / (365.25 * 24 * 60 * 60 * 1000)),
     longevityYears,
     activeRepos: active.length,
-    activeRatio: relevant.length ? active.length / relevant.length : 0,
+    activeRatio,
+    hasMomentum: active.length >= 3 || activeRatio > 0.45,
     forkRatio: safeRepos.length ? forked.length / safeRepos.length : 0,
     languageDiversity: languages.length,
     languages,
@@ -168,14 +171,15 @@ export function buildCard(profile, repos, options = {}) {
   const primaryDomain = signals.rankedDomains[0] || 'tooling';
   const archetype = ARCHETYPES[primaryDomain] || ARCHETYPES.tooling;
   const colors = colorsFromScores(signals.colorScores);
-  const significantDomains = signals.rankedDomains.length;
-  const rarityScore = significantDomains + (signals.activeRatio > 0.45 ? 1 : 0) + (signals.longevityYears > 4 ? 1 : 0) + (signals.languageDiversity > 3 ? 1 : 0);
-  const rarity = rarityScore >= 6 ? 'mythic' : rarityScore >= 4 ? 'rare' : rarityScore >= 2 ? 'uncommon' : 'common';
-  const genericCost = Math.max(1, Math.min(4, 1 + colors.length + (rarity === 'mythic' ? 1 : 0)));
+  const significantDomains = Object.values(signals.domains).filter((score) => score >= 2).length;
+  const rarityScore = significantDomains + (signals.hasMomentum ? 1 : 0) + (signals.longevityYears > 4 ? 1 : 0) + (signals.languageDiversity > 3 ? 1 : 0);
+  const rarity = rarityScore >= 7 ? 'mythic' : rarityScore >= 4 ? 'rare' : rarityScore >= 2 ? 'uncommon' : 'common';
+  const genericCost = Math.max(1, 4 - colors.length);
   const displayName = profile.name?.trim() || profile.login || 'Unknown Artificer';
-  const power = Math.max(2, Math.min(6, 2 + (signals.activeRatio > 0.45 ? 1 : 0) + (significantDomains > 2 ? 1 : 0)));
+  const power = Math.max(2, Math.min(6, 2 + (signals.hasMomentum ? 1 : 0) + (significantDomains > 2 ? 1 : 0)));
   const toughness = Math.max(2, Math.min(7, 3 + (signals.longevityYears > 3 ? 1 : 0) + (signals.accountAgeYears > 5 ? 1 : 0)));
   const snapshotDate = (options.now || new Date()).toISOString().slice(0, 10);
+  const identitySummary = `A ${rarity} ${archetype.type.toLowerCase()} shaped by ${signals.hasMomentum ? 'restless momentum' : 'patient iteration'}, ${signals.languageDiversity > 3 ? 'wide-ranging craft' : 'focused craft'}, and ${signals.longevityYears > 4 ? 'long stewardship' : 'emerging systems'}.`;
 
   return {
     name: `${displayName}, ${archetype.epithet}`,
@@ -188,6 +192,7 @@ export function buildCard(profile, repos, options = {}) {
     power,
     toughness,
     rarity,
+    identitySummary,
     visualMotifs: { domains: signals.rankedDomains, seed: hash(profile.login || displayName), primaryDomain },
     provenance: { ...signals, snapshotDate, generatorVersion: '2.0', handle: profile.login ?? '' },
   };

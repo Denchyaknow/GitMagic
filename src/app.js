@@ -122,7 +122,7 @@ function renderCard(card) {
   elements.snapshot.textContent = `FORGE ${data.generatorVersion}`;
   elements.codex.textContent = `${card.name} emerges from a ${readableDomains(card.visualMotifs.domains).toLowerCase()} practice.`;
   renderIdentity(card);
-  elements.identitySummary.textContent = `This ${card.rarity} identity weighs ${data.activeRepos ? 'current momentum' : 'long-term pattern'}, ${data.languageDiversity} working language${data.languageDiversity === 1 ? '' : 's'}, and ${data.originalRepos} original public work${data.originalRepos === 1 ? '' : 's'}—not raw fame.`;
+  elements.identitySummary.textContent = card.identitySummary;
   renderProvenance(card);
   elements.download.disabled = false;
   elements.copy.disabled = false;
