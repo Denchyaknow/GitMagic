@@ -19,7 +19,7 @@ GitMagic turns public GitHub signals into a playable, Magic-inspired card: langu
 GitMagic is a Vercel-ready serverless app. The browser calls its same-origin `/api/profile` function, which reads GitHub data on the server and caches responses for five minutes. The current production deployment is **[gitmagic.vercel.app](https://gitmagic.vercel.app)**.
 
 1. Push this repository to GitHub, then import it into Vercel to enable automatic deploys on `main`.
-2. Add an optional `GITHUB_TOKEN` environment variable in Vercel to increase GitHub API headroom. A fine-grained token with read-only public metadata access is sufficient; do not commit it.
+2. The API validates GitHub usernames, responds with upstream-safe status codes, and applies a per-client, per-instance rate limit (12 requests/minute). If you add an optional `GITHUB_TOKEN` in Vercel for more GitHub API headroom, also enable Vercel WAF/rate limiting for production traffic; use a fine-grained read-only token and never commit it.
 3. The accompanying `GitSite_Dencho` site uses a Netlify redirect so `https://dencho.dev/GitMagic` forwards to this deployment.
 
 The included `vercel.json` also supports `https://<deployment>/GitMagic` as an entry route.
