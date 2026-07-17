@@ -8,7 +8,7 @@ GitMagic turns public GitHub signals into a playable, Magic-inspired card: langu
 
 ## Features
 
-- Search any public GitHub profile directly from the browser—no API key or backend.
+- Search any public GitHub profile through a same-origin serverless endpoint—no client-side token or backend to operate.
 - Original card rules derived from public repositories, stars, forks, followers, languages, and profile bio.
 - Five-color identity mapping with developer archetypes and rarity tiers.
 - Foil-style card treatment, responsive layout, sharable `?user=<github-login>` URLs, and PNG export.
